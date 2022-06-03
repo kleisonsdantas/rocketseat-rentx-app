@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Feather } from '@expo/vector-icons';
 import React from 'react';
 
@@ -6,18 +7,36 @@ import {
   LocaleConfig,
 } from 'react-native-calendars';
 import { useTheme } from 'styled-components';
+import { generateInterval } from './generateInterval';
+import { ptBR } from './localeConfig';
 
-LocaleConfig.locales['pt-br'] = {
-  monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-  monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
-  dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
-  dayNamesShort: ['DOM', 'SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SÁB'],
-  today: 'Hoje',
-};
+LocaleConfig.locales['pt-br'] = ptBR;
 
 LocaleConfig.defaultLocale = 'pt-br';
 
-const Calendar: React.FC = () => {
+interface MarkedDateProps {
+  [date: string]: {
+    color: string;
+    textColor: string;
+    disabled?: boolean;
+    disableTouchEvent?: boolean;
+  }
+}
+
+interface DayProps {
+  dateString: string;
+  day: number;
+  month: number;
+  year: number;
+  timestamp: number;
+}
+
+interface CalendarProps {
+  markedDates: MarkedDateProps;
+  onDayPress: (date: any) => void;
+}
+
+const Calendar: React.FC<CalendarProps> = ({ markedDates, onDayPress }) => {
   const theme = useTheme();
 
   return (
@@ -49,8 +68,13 @@ const Calendar: React.FC = () => {
       }}
       firstDay={1}
       minDate={new Date().toString()}
+      markingType="period"
+      markedDates={markedDates}
+      onDayPress={onDayPress}
     />
   );
 };
 
-export { Calendar };
+export {
+  Calendar, DayProps, MarkedDateProps, generateInterval,
+};
