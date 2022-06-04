@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
+import { FlatList, ViewToken } from 'react-native';
 
 import {
   Container,
@@ -12,22 +13,52 @@ interface Props {
   imagesUrl: string[];
 }
 
-const ImageSlider: React.FC<Props> = ({ imagesUrl }) => (
-  <Container>
-    <ImageIndexes>
-      <ImageIndex active />
-      <ImageIndex active={false} />
-      <ImageIndex active={false} />
-      <ImageIndex active={false} />
-    </ImageIndexes>
+interface ChangImageProps {
+  viewableItems: ViewToken[];
+  changed: ViewToken[];
+}
 
-    <CarImageWrapper>
-      <CarImage
-        source={{ uri: imagesUrl[0] }}
-        resizeMode="contain"
+const ImageSlider: React.FC<Props> = ({ imagesUrl }) => {
+  const [imageIndex, setImageIndex] = useState(0);
+
+  const indexChanged = useRef((info: ChangImageProps) => {
+    const { index } = info.viewableItems[0];
+
+    setImageIndex(index);
+  });
+
+  return (
+    <Container>
+      <ImageIndexes>
+        {
+        imagesUrl.map((item, index) => (
+          <ImageIndex
+            key={String(index) + item}
+            active={imageIndex === index}
+          />
+        ))
+      }
+      </ImageIndexes>
+
+      <FlatList
+        data={imagesUrl}
+        keyExtractor={(key) => key}
+        renderItem={({ item }) => (
+          <CarImageWrapper>
+            <CarImage
+              source={{ uri: item }}
+              resizeMode="contain"
+            />
+          </CarImageWrapper>
+
+        )}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        onViewableItemsChanged={indexChanged.current}
+
       />
-    </CarImageWrapper>
-  </Container>
-);
+    </Container>
+  );
+};
 
 export { ImageSlider };

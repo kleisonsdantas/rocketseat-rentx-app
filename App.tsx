@@ -1,4 +1,3 @@
-import 'react-native-gesture-handler';
 import React from 'react';
 import AppLoading from 'expo-app-loading';
 import {
@@ -12,6 +11,7 @@ import {
   Archivo_600SemiBold,
 } from '@expo-google-fonts/archivo';
 import { ThemeProvider } from 'styled-components/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import theme from './src/styles/theme';
 
 import { Routes } from './src/routes';
@@ -30,9 +30,11 @@ const App: React.FC = () => {
   }
 
   return (
-    <ThemeProvider theme={theme}>
-      <Routes />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider theme={theme}>
+        <Routes />
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 };
 

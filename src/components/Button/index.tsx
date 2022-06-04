@@ -1,5 +1,6 @@
 import React from 'react';
-import { ActivityIndicator, TouchableOpacityProps } from 'react-native';
+import { ActivityIndicator } from 'react-native';
+import { RectButtonProps } from 'react-native-gesture-handler';
 import { useTheme } from 'styled-components';
 
 import {
@@ -7,7 +8,7 @@ import {
   Title,
 } from './styles';
 
-interface Props extends TouchableOpacityProps{
+interface Props extends RectButtonProps{
   title: string;
   color?: string;
   disabled?: boolean;
@@ -22,7 +23,7 @@ const Button: React.FC<Props> = ({
     <Container
       style={{ opacity: disabled ? 0.5 : 1 }}
       color={color}
-      disabled={disabled}
+      enable={!disabled}
       {...rest}
     >
       {loading
