@@ -7,6 +7,10 @@ interface ButtonProps {
  color?: string;
 }
 
+interface ButtonTextProps {
+  light: boolean;
+}
+
 export const Container = styled(RectButton as unknown as AnyStyledComponent)<ButtonProps>`
   width: 100%;
 
@@ -15,11 +19,15 @@ export const Container = styled(RectButton as unknown as AnyStyledComponent)<But
   justify-content: center;
 
   background-color: ${({ theme, color }) => (color || theme.colors.main)};
+
+  margin-bottom: 8px;
 `;
 
-export const Title = styled.Text`
+export const Title = styled.Text<ButtonTextProps>`
   font-family: ${({ theme }) => theme.fonts.primary500};
   font-size: ${RFValue(13)}px;
 
-  color: ${({ theme }) => theme.colors.background_secondary};
+  color: ${({ theme, light }) => (light
+    ? theme.colors.header
+    : theme.colors.background_secondary)};
 `;

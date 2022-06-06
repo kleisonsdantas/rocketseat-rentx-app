@@ -4,14 +4,17 @@ import { Home } from '../screens/Home';
 import { CarDetails } from '../screens/CarDetails';
 import { Scheduling } from '../screens/Scheduling';
 import { SchedulingDetails } from '../screens/SchedulingDetails';
-import { SchedulingComplete } from '../screens/SchedulingComplete';
+import { Confirmation } from '../screens/Confirmation';
 import { MyCars } from '../screens/MyCars';
 import { Splash } from '../screens/Splash';
+import { SignIn } from '../screens/SignIn';
+import { SingUpFirstStep } from '../screens/SingUp/SingUpFirstStep';
+import { SingUpSecondStep } from '../screens/SingUp/SingUpSecondStep';
 
 const { Navigator, Screen } = createNativeStackNavigator();
 const StackRoutes: React.FC = () => (
   <Navigator
-    initialRouteName="Splash"
+    initialRouteName="SignIn"
     screenOptions={{
       headerShown: false,
     }}
@@ -19,6 +22,18 @@ const StackRoutes: React.FC = () => (
     <Screen
       name="Splash"
       component={Splash}
+    />
+    <Screen
+      name="SignIn"
+      component={SignIn}
+    />
+    <Screen
+      name="SingUpFirstStep"
+      component={SingUpFirstStep}
+    />
+    <Screen
+      name="SingUpSecondStep"
+      component={SingUpSecondStep}
     />
     <Screen
       name="Home"
@@ -40,8 +55,8 @@ const StackRoutes: React.FC = () => (
       component={SchedulingDetails}
     />
     <Screen
-      name="SchedulingComplete"
-      component={SchedulingComplete}
+      name="Confirmation"
+      component={Confirmation}
     />
     <Screen
       name="MyCars"

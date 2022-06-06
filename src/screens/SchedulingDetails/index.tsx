@@ -84,7 +84,11 @@ const SchedulingDetails: React.FC = () => {
         id: car.id,
         unavailable_dates,
       }).then(() => {
-        navigation.navigate('SchedulingComplete' as never);
+        navigation.navigate('Confirmation' as never, {
+          title: 'Carro alugado!',
+          message: 'Agora você só precisa ir\naté a concessionária da RENTX\npegar seu automóvel',
+          nextScreenRoute: 'Home',
+        } as never);
       }).catch(() => {
         Alert.alert('Não foi possível confirmar o agendamento');
         setSendingSchedule(false);
@@ -187,7 +191,7 @@ const SchedulingDetails: React.FC = () => {
 
       <Footer>
         <Button
-          disabled={sendingSchedule}
+          enabled={sendingSchedule}
           loading={sendingSchedule}
           title="Alugar agora"
           color={theme.colors.success}

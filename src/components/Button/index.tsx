@@ -11,24 +11,29 @@ import {
 interface Props extends RectButtonProps{
   title: string;
   color?: string;
-  disabled?: boolean;
   loading?: boolean;
+  light?: boolean;
 }
 const Button: React.FC<Props> = ({
-  title, color, disabled = false, loading = false, ...rest
+  title,
+  color,
+  enabled = true,
+  loading = false,
+  light = false,
+  ...rest
 }) => {
   const theme = useTheme();
 
   return (
     <Container
-      style={{ opacity: disabled ? 0.5 : 1 }}
+      style={{ opacity: enabled ? 1 : 0.5 }}
       color={color}
-      enable={!disabled}
+      enabled={enabled}
       {...rest}
     >
       {loading
         ? <ActivityIndicator color={theme.colors.background_secondary} />
-        : <Title>{title}</Title>}
+        : <Title light={light}>{title}</Title>}
     </Container>
   );
 };
