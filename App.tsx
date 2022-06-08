@@ -15,6 +15,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import theme from './src/styles/theme';
 
 import { Routes } from './src/routes';
+import { AppProvider } from './src/hooks';
 
 const App: React.FC = () => {
   const [fontsLoaded] = useFonts({
@@ -32,7 +33,9 @@ const App: React.FC = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider theme={theme}>
-        <Routes />
+        <AppProvider>
+          <Routes />
+        </AppProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

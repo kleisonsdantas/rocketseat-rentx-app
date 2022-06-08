@@ -10,7 +10,10 @@ import {
 } from './styles';
 
 interface Props {
-  imagesUrl: string[];
+  imagesUrl: {
+    id: string;
+    photo: string;
+  }[];
 }
 
 interface ChangImageProps {
@@ -33,7 +36,7 @@ const ImageSlider: React.FC<Props> = ({ imagesUrl }) => {
         {
         imagesUrl.map((item, index) => (
           <Bullet
-            key={String(index) + item}
+            key={item.id}
             active={imageIndex === index}
           />
         ))
@@ -42,11 +45,11 @@ const ImageSlider: React.FC<Props> = ({ imagesUrl }) => {
 
       <FlatList
         data={imagesUrl}
-        keyExtractor={(key) => key}
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <CarImageWrapper>
             <CarImage
-              source={{ uri: item }}
+              source={{ uri: item.photo }}
               resizeMode="contain"
             />
           </CarImageWrapper>

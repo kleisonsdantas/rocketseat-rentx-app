@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   Keyboard, KeyboardAvoidingView, StatusBar, TouchableWithoutFeedback,
@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 
+import { database } from '../../database';
+
 import {
   Container,
   Header,
@@ -17,14 +19,19 @@ import {
   Form,
   Footer,
 } from './styles';
+import { useAuth } from '../../hooks/auth';
 
 const SignIn: React.FC = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const [isLogIn, setIsLogIn] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { signIn } = useAuth();
 
   const handleSignIn = useCallback(async () => {
+    setIsLogIn(true);
+
     try {
       const schema = Yup.object().shape({
         email: Yup.string()
@@ -35,18 +42,36 @@ const SignIn: React.FC = () => {
       });
 
       await schema.validate({ email, password });
+
+      await signIn({ email, password });
+
+      navigation.navigate('Home' as never);
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('Opa', error.message);
       } else {
         Alert.alert('Erro na autenticação', 'Ocorreu um erro ao fazer login, verifique as credenciais');
       }
+
+      setIsLogIn(false);
     }
-  }, [email, password]);
+  }, [email, password, signIn, navigation]);
 
   const handleNewAccount = useCallback(() => {
     navigation.navigate('SingUpFirstStep' as never);
   }, [navigation]);
+
+  useEffect(() => {
+    async function loadingData(): Promise<void> {
+      const userCollection = database.get('users');
+
+      const users = await userCollection.query().fetch();
+
+      console.log(users);
+    }
+
+    loadingData();
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -100,8 +125,8 @@ const SignIn: React.FC = () => {
 
           <Footer>
             <Button
-              enabled
-              loading={false}
+              enabled={!isLogIn}
+              loading={isLogIn}
               title="Login"
               onPress={handleSignIn}
             />

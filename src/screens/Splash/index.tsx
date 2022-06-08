@@ -50,7 +50,7 @@ const Splash: React.FC = () => {
   }));
 
   const startApp = useCallback(() => {
-    navigation.navigate('Home' as never);
+    navigation.navigate('SignIn' as never);
   }, [navigation]);
 
   useEffect(() => {

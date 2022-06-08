@@ -129,10 +129,10 @@ const CarDetails: React.FC = () => {
           </Description>
 
           <Rent>
-            <Period>{car.rent.period}</Period>
+            <Period>{car.period}</Period>
             <Price>
               R$
-              {car.rent.price}
+              {car.price}
             </Price>
           </Rent>
         </Details>
@@ -150,12 +150,6 @@ const CarDetails: React.FC = () => {
         </Accessories>
 
         <About>
-          {car.about}
-          {car.about}
-          {car.about}
-          {car.about}
-          {car.about}
-          {car.about}
           {car.about}
         </About>
       </Animated.ScrollView>

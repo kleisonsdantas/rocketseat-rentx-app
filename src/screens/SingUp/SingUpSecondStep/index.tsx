@@ -9,6 +9,7 @@ import { BackButton } from '../../../components/BackButton';
 import { Bullet } from '../../../components/Bullet';
 import { Button } from '../../../components/Button';
 import { Input } from '../../../components/Input';
+import api from '../../../services/api';
 
 import {
   Container,
@@ -51,12 +52,22 @@ const SingUpSecondStep: React.FC = () => {
       return;
     }
 
-    navigation.navigate('Confirmation' as never, {
-      title: 'Conta Criada!',
-      message: 'Agora é só fazer login\ne aproveitar',
-      nextScreenRoute: 'SignIn',
-    } as never);
-  }, [password, passwordConfirm, navigation]);
+    await api.post('/users', {
+      name: user.name,
+      email: user.email,
+      driver_license: user.driverLicense,
+      password,
+    }).then(() => {
+      navigation.navigate('Confirmation' as never, {
+        title: 'Conta Criada!',
+        message: 'Agora é só fazer login\ne aproveitar',
+        nextScreenRoute: 'SignIn',
+      } as never);
+    })
+      .catch(() => {
+        Alert.alert('Opa', 'Não foi possível cadastrar');
+      });
+  }, [password, passwordConfirm, user.name, user.email, user.driverLicense, navigation]);
 
   return (
     <KeyboardAvoidingView
