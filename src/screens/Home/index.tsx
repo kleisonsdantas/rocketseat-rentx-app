@@ -108,13 +108,12 @@ const Home: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if(netInfo.isConnected) {
-      console.log("Online")
+    if (netInfo.isConnected) {
+      console.log('Online');
     } else {
-      console.log('Offline')
+      console.log('Offline');
     }
-
-  }, [])
+  }, []);
 
   return (
     <Container>
