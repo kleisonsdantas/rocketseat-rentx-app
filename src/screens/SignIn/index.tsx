@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Alert,
   Keyboard, KeyboardAvoidingView, StatusBar, TouchableWithoutFeedback,
@@ -8,8 +8,6 @@ import { useTheme } from 'styled-components';
 import { useNavigation } from '@react-navigation/native';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
-
-import { database } from '../../database';
 
 import {
   Container,
@@ -44,8 +42,6 @@ const SignIn: React.FC = () => {
       await schema.validate({ email, password });
 
       await signIn({ email, password });
-
-      navigation.navigate('Home' as never);
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         Alert.alert('Opa', error.message);
@@ -55,23 +51,11 @@ const SignIn: React.FC = () => {
 
       setIsLogIn(false);
     }
-  }, [email, password, signIn, navigation]);
+  }, [email, password, signIn]);
 
   const handleNewAccount = useCallback(() => {
     navigation.navigate('SingUpFirstStep' as never);
   }, [navigation]);
-
-  useEffect(() => {
-    async function loadingData(): Promise<void> {
-      const userCollection = database.get('users');
-
-      const users = await userCollection.query().fetch();
-
-      console.log(users);
-    }
-
-    loadingData();
-  }, []);
 
   return (
     <KeyboardAvoidingView

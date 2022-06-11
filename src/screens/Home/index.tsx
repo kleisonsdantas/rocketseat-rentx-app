@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
+import { useNetInfo } from '@react-native-community/netinfo';
 
 // import Animated, {
 //   useSharedValue,
@@ -46,6 +47,7 @@ import { useAuth } from '../../hooks/auth';
 // });
 
 const Home: React.FC = () => {
+  const netInfo = useNetInfo();
   const navigation = useNavigation();
   const theme = useTheme();
   const { user } = useAuth();
@@ -83,21 +85,36 @@ const Home: React.FC = () => {
   //   navigation.navigate('MyCars' as never);
   // }, [navigation]);
 
-  const fetchCars = useCallback(async () => {
-    try {
-      const response = await api.get('/cars');
+  useEffect(() => {
+    let isMounted = true;
 
-      setCars(response.data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingCars(false);
+    async function fetchCars(): Promise<void> {
+      try {
+        const response = await api.get('/cars');
+
+        if (isMounted) setCars(response.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        if (isMounted) setLoadingCars(false);
+      }
     }
+
+    fetchCars();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
-    fetchCars();
-  }, [fetchCars]);
+    if(netInfo.isConnected) {
+      console.log("Online")
+    } else {
+      console.log('Offline')
+    }
+
+  }, [])
 
   return (
     <Container>

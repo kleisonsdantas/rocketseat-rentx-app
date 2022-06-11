@@ -48,7 +48,7 @@ export const Form = styled.View`
 
   margin-top: 64px;
   margin-bottom: 16px;
-  `;
+`;
 
 export const FormTitle = styled.Text`
   font-size: ${RFValue(20)}px;
