@@ -8,7 +8,9 @@ import {
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useTheme } from 'styled-components';
 import { useNetInfo } from '@react-native-community/netinfo';
-
+import { synchronize } from '@nozbe/watermelondb/sync';
+import { database } from '../../database';
+import { Car as ModelCar } from '../../database/model/Car';
 // import Animated, {
 //   useSharedValue,
 //   useAnimatedStyle,
@@ -32,7 +34,6 @@ import {
   TotalCars,
   CarList,
 } from './styles';
-import { useAuth } from '../../hooks/auth';
 
 // const ButtonAnimated = Animated.createAnimatedComponent(RectButton);
 
@@ -50,9 +51,8 @@ const Home: React.FC = () => {
   const netInfo = useNetInfo();
   const navigation = useNavigation();
   const theme = useTheme();
-  const { user } = useAuth();
   const [loadingCars, setLoadingCars] = useState(true);
-  const [cars, setCars] = useState<CarDTO[]>([]);
+  const [cars, setCars] = useState<ModelCar[]>([]);
 
   // const buttonPositionX = useSharedValue(0);
   // const buttonPositionY = useSharedValue(0);
@@ -77,7 +77,7 @@ const Home: React.FC = () => {
   //   },
   // });
 
-  const handleCarDetails = useCallback((car: CarDTO) => {
+  const handleCarDetails = useCallback((car: ModelCar) => {
     navigation.navigate('CarDetails' as never, { car } as never);
   }, [navigation]);
 
@@ -85,14 +85,33 @@ const Home: React.FC = () => {
   //   navigation.navigate('MyCars' as never);
   // }, [navigation]);
 
+  const offlineSynchronize = useCallback(async () => {
+    await synchronize({
+      database,
+      pullChanges: async ({ lastPulledAt }) => {
+        const response = await api
+          .get(`/cars/sync/pull?lastPulledVersion=${lastPulledAt || 0}`);
+
+        const { changes, latestVersion } = response.data;
+
+        return { changes, timestamp: latestVersion };
+      },
+      pushChanges: async (changes: any) => {
+        const user = changes.users;
+        await api.post('users/sync', user);
+      },
+    });
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
 
     async function fetchCars(): Promise<void> {
       try {
-        const response = await api.get('/cars');
+        const carCollection = database.get<ModelCar>('/cars');
+        const localCars = await carCollection.query().fetch();
 
-        if (isMounted) setCars(response.data);
+        if (isMounted) setCars(localCars);
       } catch (error) {
         console.log(error);
       } finally {
